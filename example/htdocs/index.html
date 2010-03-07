@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>jsI18n demo</title>
+		<script type="text/javascript" src="../../vendor/prototype/prototype.js"></script>
+		<script type="text/javascript" src="../../lib/YAJSIE.js"></script>
+		<script type="text/javascript" src="YAJSIE_data.js"></script>
+	</head>
+	<body>
+		<p>jsI18n demo</p>
+		<script type="text/javascript"><!--
+			YAJSIE = new YAJSIE({locale: 'de_DE'});
+			console.log(YAJSIE._("i am the first text"));
+			console.log(YAJSIE._("me beeing the second test"));
+			console.log(YAJSIE._("i am not in the dictionary"));
+			console.log(YAJSIE._n("#n# day ago", "#n# days ago", 3, {n: 3}));
+		--></script>
+	</body>
+</html>

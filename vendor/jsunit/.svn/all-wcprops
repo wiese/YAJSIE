@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/repos/sanego/!svn/ver/1610/trunk/htdocs/javascripts/lib/vendor/jsunit
+END
+changelist.txt
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/repos/sanego/!svn/ver/1610/trunk/htdocs/javascripts/lib/vendor/jsunit/changelist.txt
+END
+jsunit.properties.sample
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/repos/sanego/!svn/ver/1610/trunk/htdocs/javascripts/lib/vendor/jsunit/jsunit.properties.sample
+END
+index.html
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/repos/sanego/!svn/ver/1610/trunk/htdocs/javascripts/lib/vendor/jsunit/index.html
+END
+readme.txt
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/repos/sanego/!svn/ver/1610/trunk/htdocs/javascripts/lib/vendor/jsunit/readme.txt
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/repos/sanego/!svn/ver/1610/trunk/htdocs/javascripts/lib/vendor/jsunit/build.xml
+END
