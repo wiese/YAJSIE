@@ -5,16 +5,45 @@
 		<title>jsI18n demo</title>
 		<script type="text/javascript" src="../../vendor/prototype/prototype.js"></script>
 		<script type="text/javascript" src="../../lib/YAJSIE.js"></script>
-		<script type="text/javascript" src="YAJSIE_data.js"></script>
+		<script type="text/javascript">
+			/**
+			 * Some nice layout for the demo output
+			 *
+			 * @param String text
+			 *
+			 * @return void
+			 */
+			function println(text) {
+				document.write('- ' + text + '<br>');
+			}
+		</script>
 	</head>
 	<body>
-		<p>jsI18n demo</p>
+		<h1>jsI18n demo</h1>
+
+		<p>A bunch of translated string should appear here any time soon...</p>
+
 		<script type="text/javascript"><!--
-			YAJSIE = new YAJSIE({locale: 'de_DE'});
-			console.log(YAJSIE._("i am the first text"));
-			console.log(YAJSIE._("me beeing the second test"));
-			console.log(YAJSIE._("i am not in the dictionary"));
-			console.log(YAJSIE._n("#n# day ago", "#n# days ago", 3, {n: 3}));
+
+			i18n = new YAJSIE('de_DE');
+			println(i18n._("i am the first text"));
+
+			// some data replacement needed
+			println(i18n._("singular place #holder# lala", {holder: 'haha'}));
+
+			// multiple german flowser
+			println(i18n._n("flower", "flowers", 2));
+
+			// some plural with replacement
+			var myNum = 3;	// some var we aquired somehow
+			println(i18n._n("#n# day ago", "#n# days ago", myNum, {n: myNum}));
+
+			// i'll wind up in the debug information as i can't be translated
+			println(i18n._("i am not in the dictionary"));
+
+			// debugging help for your dev environment - don't show in production
+			document.write('<p class="jsDebugConsole">' + i18n.getDebug() + '</p>');
+
 		--></script>
 	</body>
 </html>

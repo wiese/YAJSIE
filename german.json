@@ -1,0 +1,32 @@
+{
+   "messages" : {
+      "" : {
+         "X-Poedit-Basepath" : " .",
+         "Plural-Forms" : " nplurals=2; plural=n != 1;",
+         "MIME-Version" : " 1.0",
+         "POT-Creation-Date" : " 2010-01-19 10:00+0100",
+         "X-Poedit-SourceCharset" : " utf-8",
+         "X-Poedit-Country" : " GERMANY",
+         "X-Poedit-Language" : " German",
+         "X-Poedit-KeywordsList" : " setFlash;_n",
+         "Content-Type" : " text/plain; charset=UTF-8",
+         "PO-Revision-Date" : " ",
+         "Content-Transfer-Encoding" : " 8bit",
+         "Report-Msgid-Bugs-To" : " ",
+         "Project-Id-Version" : " an  example"
+      },
+      "i am the first text" : [
+         null,
+         "ich bin der erste test"
+      ],
+      "#n# day ago" : [
+         "#n# days ago",
+         "vor #n# Tag",
+         "vor #n# Tagen"
+      ],
+      "me beeing the second test" : [
+         null,
+         "ich bin der zweite test"
+      ]
+   }
+}

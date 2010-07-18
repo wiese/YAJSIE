@@ -5,39 +5,24 @@
 		<title>jsI18n demo</title>
 		<script type="text/javascript" src="../../vendor/prototype/prototype.js"></script>
 		<script type="text/javascript" src="../../lib/YAJSIE.js"></script>
-		<script type="text/javascript"  src="../../vendor/jsunit/app/jsUnitCore.js"></script>
+		<script type="text/javascript" src="../../vendor/jsunit/app/jsUnitCore.js"></script>
 		<script type="text/javascript">
-			var YAJSIE_data = {
-				'de_DE' : {
-					"pluralForms": "nplurals=2; plural=n != 1;",
+			var some_yajsie_data = {
+				'config': {
 					"template": {
-						"pattern": /(^|.|\r|\n)(#(\w+)#)/
-					},
-					"translations": {
-						"first": "erster",
-						"second ": "zweiter ",
-						"  third": "  dritter",
-						"i am #name#": "ich bin #name#",
-						"another #n# times": {
-							"msgid_plural": "one more time",
-							"msgstr[0]": "noch einmal",
-							"msgstr[1]": "noch #n# mal"
-						}
+						"pattern": "(^|.|\\r|\\n)(#(\\w+)#)"
 					}
 				},
-				'ru_RU' : {
-					"pluralForms": "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;",
-					"template": {
-						"pattern": /(^|.|\r|\n)(#(\w+)#)/
-					},
-					"translations": {
-						"File": {
-							"msgid_plural": "Files",
-							"msgstr[0]": "Файл",
-							"msgstr[1]": "Файла",
-							"msgstr[2]": "Файлов"
+				'locales': {
+					'de_DE' : {
+						"pluralForms": "nplurals=2; plural=n != 1;",
+						"translations": {
+							"just one short text": [
+								null,
+								"nur ein kurzer text"
+							],
 						}
-					}
+					},
 				}
 			};
 		</script>
@@ -45,31 +30,27 @@
 
 			var testsuite = new top.jsUnitTestSuite();
 
-			function testTest() {
-				assertEquals("it's alive", 1, 1);
-			}
-
-			function testConfigObject() {
+			function testLocaleGiven() {
 				try {
 					var i18n = new YAJSIE();
-					fail("Unexpected success creating YAJSIE with empty config");
+					fail("Unexpected success creating YAJSIE with no locale given");
 				}
 				catch(e) {
 					var expected =
-						new Error('You have to define at least the locale information');
-					assertEquals(expected.toString(), 'Error: '+e.toString());
+						new Error('You have to define at least the locale information.');
+					assertEquals(expected.toString(), e.toString());
 				}
 			}
 
 			function testSigular() {
-				var i18n = new YAJSIE({locale: 'de_DE', variable: 'YAJSIE_data'});
+				var i18n = new YAJSIE('de_DE');
 				assertEquals("erster", i18n._("first"));
 				assertEquals("zweiter ", i18n._("second "));
 				assertEquals("  dritter", i18n._("  third"));
 			}
 
 			function testSingularReplacement() {
-				var i18n = new YAJSIE({locale: 'de_DE', variable: 'YAJSIE_data'});
+				var i18n = new YAJSIE('de_DE');
 				assertEquals(
 					"ich bin peter",
 					i18n._("i am #name#", {'name': 'peter'})
@@ -77,37 +58,58 @@
 			}
 
 			function testOriginalFallback() {
-				var i18n = new YAJSIE({locale: 'de_DE', variable: 'YAJSIE_data'});
-				var translation;
-				try {
-					translation = i18n._("not in translations");
-					console.log('blubb');
-				}
-				catch (e) {
-					console.log(e);
-					//assertEquals("not in translations", exceptionText);
-				}
+				var i18n = new YAJSIE('de_DE');
+				var translation = i18n._("not in translations");
 				assertEquals("not in translations", translation);
 			}
 
+			function testUnknownException() {
+				var i18n = new YAJSIE('de_DE');
+				try {
+					var translation = i18n.gettext("not in translations", null, null);
+					fail("Unexpected success translating text not in the list");
+				}
+				catch(e) {
+					var expected =
+						new Error("Translation for 'not in translations' not found!");
+					assertEquals(expected.toString(), e.toString());
+				}
+			}
+
 			function testPlural() {
-				var i18n = new YAJSIE({locale: 'de_DE', variable: 'YAJSIE_data'});
+				var i18n = new YAJSIE('de_DE');
 				assertEquals(
 					'noch einmal',
 					i18n._n("another #n# times", "one more time", 1, {n: 1})
 				);
 			}
 
+			function testPluralOmmittedCountDefaultsToOne() {
+				var i18n = new YAJSIE('de_DE');
+				assertEquals(
+					'noch einmal',
+					i18n._n("another #n# times", "one more time")
+				);
+			}
+
 			function testPluralReplacement() {
-				var i18n = new YAJSIE({locale: 'de_DE', variable: 'YAJSIE_data'});
+				var i18n = new YAJSIE('de_DE');
 				assertEquals(
 					'noch 3 mal',
 					i18n._n("another #n# times", "one more time", 3, {n: 3})
 				);
 			}
 
+			function testUnknownTranslationReplacement() {
+				var i18n = new YAJSIE('de_DE');
+				assertEquals(
+					'my name is Hans.',
+					i18n._("my name is #username#.", {username: 'Hans'})
+				);
+			}
+
 			function testSetLocale() {
-				var i18n = new YAJSIE({locale: 'de_DE', variable: 'YAJSIE_data'});
+				var i18n = new YAJSIE('de_DE');
 				try {
 					i18n.setLocale('lorem');
 					fail("Unexpected success setting undefined locale setting");
@@ -115,16 +117,69 @@
 				catch(e) {
 					var expected =
 						new Error("The required locale setting 'lorem' is not available.");
-					assertEquals(expected.toString(), 'Error: '+e.toString());
+					assertEquals(expected.toString(), e.toString());
 				}
 			}
 
 			function testComplexPluralForms() {
-				var i18n = new YAJSIE({locale: 'ru_RU', variable: 'YAJSIE_data'});
+				var i18n = new YAJSIE('ru_RU');
 				assertEquals("Файл", i18n._("File"));
 				assertEquals("Файл", i18n._n("File", "Files", 1));
 				assertEquals("Файла", i18n._n("File", "Files", 2));
 				assertEquals("Файлов", i18n._n("File", "Files", 10));
+			}
+
+			function testDataFromFoobarVar() {
+				try {
+					var i18n = new YAJSIE('de_DE', {variable: {'lorem': 'ipsum'}});
+					fail("Unexpected success setting undefined value as data object");
+				}
+				catch(e) {
+					var expected =
+						new Error(
+							"The given 'variable' does not contain usable YEJSIE data."
+						);
+					assertEquals(expected.toString(), e.toString());
+				}
+			}
+
+			function testDataFromVar() {
+				var i18n = new YAJSIE('de_DE', {variable: some_yajsie_data});
+				assertEquals("nur ein kurzer text", i18n._("just one short text"));
+			}
+
+			function testDataFoobarFile() {
+
+				var files = ['foobar_no_json.js', 'foobar_json.js'];
+
+				for (var i = 0; i < files.length; i++) {
+					try {
+						var i18n = new YAJSIE('de_DE', {file: files[i]});
+						fail("Unexpected success using foobar file");
+					}
+					catch(e) {
+						var expected =
+							new Error(
+								"YAJSIE data loaded from external file '"+files[i]+"', but found corrupt data."
+							);
+						assertEquals(expected.toString(), e.toString());
+					}
+				}
+			}
+
+			function testDataNonexistingFile() {
+
+				try {
+					var i18n = new YAJSIE('de_DE', {file: 'tralala.js'});
+					fail("Unexpected success using nonexisting file");
+				}
+				catch(e) {
+					var expected =
+						new Error(
+							"Failed loading YAJSIE data from external file 'tralala.js'."
+						);
+					assertEquals(expected.toString(), e.toString());
+				}
 			}
 
 		--></script>
